@@ -1,0 +1,346 @@
+﻿@model EMS.Entities.Entities.Employee
+
+@{
+    ViewData["Title"] = "Add Employee";
+}
+
+<div class="container-fluid mt-4">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">Add Employee</h2>
+
+            <p class="text-muted mb-0">
+                Add a new employee to the system
+            </p>
+        </div>
+
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            ← Back to Employees
+        </a>
+
+    </div>
+
+
+    <!-- Employee Form Card -->
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-white py-3">
+
+            <h5 class="mb-0 fw-semibold">
+                Employee Information
+            </h5>
+
+        </div>
+
+
+        <div class="card-body p-4">
+
+            <form asp-action="Create"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                <!-- Validation -->
+                <div asp-validation-summary="All"
+                     class="alert alert-danger"
+                     role="alert">
+                </div>
+
+
+                <div class="row">
+
+
+                    <!-- First Name -->
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="FirstName"
+                               class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="FirstName"
+                               class="form-control"
+                               placeholder="Enter first name" />
+
+                        <span asp-validation-for="FirstName"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- Last Name -->
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="LastName"
+                               class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="LastName"
+                               class="form-control"
+                               placeholder="Enter last name" />
+
+                        <span asp-validation-for="LastName"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- Email -->
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="Email"
+                               class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="Email"
+                               type="email"
+                               class="form-control"
+                               placeholder="example@gmail.com" />
+
+                        <span asp-validation-for="Email"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- Phone -->
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="Phone"
+                               class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="Phone"
+                               class="form-control"
+                               placeholder="Enter phone number" />
+
+                        <span asp-validation-for="Phone"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- Date of Joining -->
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="DateOfJoining"
+                               class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="DateOfJoining"
+                               type="date"
+                               class="form-control" />
+
+                        <span asp-validation-for="DateOfJoining"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+                @*     <!-- Date of DateOfBirth -->
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="DateOfBirth"
+                               class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="DateOfBirth"
+                               type="date"
+                               class="form-control" />
+
+                        <span asp-validation-for="DateOfBirth"
+                              class="text-danger">
+                        </span>
+
+                    </div> *@
+
+
+                    <!-- Department -->
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="Department"
+                               class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="Department"
+                               class="form-control"
+                               placeholder="e.g. IT" />
+
+                        <span asp-validation-for="Department"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- Designation -->
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="Designation"
+                               class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="Designation"
+                               class="form-control"
+                               placeholder="e.g. Software Developer" />
+
+                        <span asp-validation-for="Designation"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- Salary -->
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="Salary"
+                               class="form-label fw-semibold">
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                ₹
+                            </span>
+
+                            <input asp-for="Salary"
+                                   type="number"
+                                   step="0.01"
+                                   class="form-control"
+                                   placeholder="45000" />
+
+                        </div>
+
+                        <span asp-validation-for="Salary"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- Status -->
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="Status"
+                               class="form-label fw-semibold">
+                        </label>
+
+                        <select asp-for="Status"
+                                class="form-select">
+
+                            <option value="">Select Status</option>
+
+                            <option value="Active">
+                                Active
+                            </option>
+
+                            <option value="Inactive">
+                                Inactive
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="Status"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- Employee Image -->
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Employee Image
+                        </label>
+
+                        <input type="file"
+                               name="imageFile"
+                               class="form-control"
+                               accept="image/*" />
+
+                        <small class="text-muted">
+                            Upload JPG, JPEG or PNG image.
+                        </small>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- Buttons -->
+                <div class="border-top pt-3 mt-3">
+
+                    <button type="submit"
+                            class="btn btn-primary px-4">
+
+                        Save Employee
+
+                    </button>
+
+
+                    <a asp-action="Index"
+                       class="btn btn-outline-secondary px-4 ms-2">
+
+                        Cancel
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .card {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .form-label {
+        font-size: 14px;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 42px;
+        border-radius: 6px;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.15);
+        }
+
+    .input-group-text {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+
+</style>
+
+
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

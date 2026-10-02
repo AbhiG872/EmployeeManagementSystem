@@ -1,0 +1,53 @@
+﻿@model EMS.Entities.Entities.Employee
+
+@{
+    ViewData["Title"] = "Delete Employee";
+}
+
+<div class="container mt-4">
+
+    <h2>Delete Employee</h2>
+
+    <div class="alert alert-danger">
+        Are you sure you want to delete this employee?
+    </div>
+
+    <dl class="row">
+
+        <dt class="col-sm-3">Employee Code</dt>
+        <dd class="col-sm-9">@Model.EmployeeCode</dd>
+
+        <dt class="col-sm-3">Name</dt>
+        <dd class="col-sm-9">
+            @Model.FirstName @Model.LastName
+        </dd>
+
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+
+        <dt class="col-sm-3">Department</dt>
+        <dd class="col-sm-9">@Model.Department</dd>
+
+        <dt class="col-sm-3">Designation</dt>
+        <dd class="col-sm-9">@Model.Designation</dd>
+
+    </dl>
+
+    <form asp-action="Delete" method="post">
+
+        <input type="hidden"
+               asp-for="EmployeeId" />
+
+        <button type="submit"
+                class="btn btn-danger">
+            Yes, Delete
+        </button>
+
+        <a asp-action="Index"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+
+    </form>
+
+</div>

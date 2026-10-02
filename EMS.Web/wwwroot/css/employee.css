@@ -1,0 +1,134 @@
+﻿/* =========================
+   Cards
+========================= */
+
+.card {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.card-header {
+    border-bottom: 1px solid #e9ecef;
+}
+
+
+/* =========================
+   Search & Filter
+========================= */
+
+.form-label {
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.form-control,
+.form-select {
+    min-height: 42px;
+    border-radius: 6px;
+}
+
+.input-group-text {
+    border-radius: 6px 0 0 6px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.15);
+}
+
+
+/* =========================
+   Table
+========================= */
+
+.table th {
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.table td {
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+
+/* =========================
+   Sorting Button
+========================= */
+
+.sort-btn {
+    border: none;
+    background: transparent;
+    padding: 0;
+    font-weight: 600;
+    cursor: pointer;
+    color: inherit;
+}
+
+    .sort-btn:hover {
+        text-decoration: underline;
+    }
+
+    .sort-btn span {
+        margin-left: 5px;
+        font-size: 12px;
+    }
+
+
+/* =========================
+   Employee Image
+========================= */
+
+.employee-image {
+    object-fit: cover;
+    border: 2px solid #e9ecef;
+}
+
+
+/* =========================
+   Default Avatar
+========================= */
+
+.default-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #0d6efd;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   Action Buttons
+========================= */
+
+.btn-group .btn {
+    margin-right: 3px;
+}
+
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 768px) {
+
+    .container-fluid {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .d-flex.justify-content-between {
+        gap: 15px;
+    }
+}
