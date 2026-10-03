@@ -1,16 +1,22 @@
-﻿using EMS.Entities.Entities;
+﻿using EMS.Business.Interfaces;
+using EMS.Entities.Entities;
 using Microsoft.AspNetCore.Mvc;
-using EMS.Business.Interfaces;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EMS.Web.Controllers
 {
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employeeService;
+        private readonly IDepartmentService _departmentService;
+        private readonly IDesignationService _designationService;
 
-        public EmployeeController(IEmployeeService employeeService)
+        public EmployeeController(IEmployeeService employeeService, IDepartmentService departmentService,
+             IDesignationService designationService)
         {
             _employeeService = employeeService;
+            _departmentService = departmentService;
+            _designationService = designationService;
         }
 
         // READ - Employee List
@@ -48,12 +54,12 @@ namespace EMS.Web.Controllers
         }
         [HttpGet]
         public async Task<IActionResult> GetEmployees(
-                string? search,
-                string? department,
-                string? status,
-                string? sortColumn,
-                string? sortOrder,
-                int pageNumber = 1)
+           string? search,
+           string? department,
+           string? status,
+           string? sortColumn,
+           string? sortOrder,
+           int pageNumber = 1)
         {
             int pageSize = 10;
 
@@ -66,21 +72,49 @@ namespace EMS.Web.Controllers
                 pageNumber,
                 pageSize);
 
+            var items = employees.Items.Select(e => new
+            {
+                employeeId = e.EmployeeId,
+                employeeCode = e.EmployeeCode,
+                firstName = e.FirstName,
+                lastName = e.LastName,
+                email = e.Email,
+                phone = e.Phone,
+
+                department = e.Department?.DepartmentName,
+
+                designation = e.Designation?.DesignationName,
+
+                salary = e.Salary,
+                status = e.Status,
+                imagePath = e.ImagePath
+            });
+
             return Json(new
             {
-                items = employees.Items,
+                items = items,
                 currentPage = employees.CurrentPage,
                 pageSize = employees.PageSize,
                 totalPages = employees.TotalPages,
                 totalRecords = employees.TotalRecords
             });
         }
+        private async Task PopulateDepartmentsAsync(int? selectedDepartmentId = null)
+        {
+            var departments = await _departmentService.GetLookupAsync();
 
+
+            ViewBag.Departments = new SelectList(departments, "DepartmentId", "DepartmentName",
+                selectedDepartmentId);
+
+        }
         // CREATE - GET
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            await PopulateDepartmentsAsync();
+
+            return View(new Employee());
         }
 
         // CREATE - POST
@@ -92,6 +126,8 @@ namespace EMS.Web.Controllers
 
             if (ModelState.IsValid)
             {
+                await PopulateDepartmentsAsync(employee.DepartmentId);
+
                 return View(employee);
             }
 
@@ -127,7 +163,29 @@ namespace EMS.Web.Controllers
             }
 
             await _employeeService.AddAsync(employee);
+            TempData["SuccessMessage"] = "Employee created successfully.";
+
             return RedirectToAction(nameof(Index));
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDesignations(int departmentId)
+        {
+            if (departmentId <= 0)
+            {
+                return Json(new List<object>());
+            }
+
+            var designations =
+                await _designationService
+                    .GetByDepartmentIdAsync(departmentId);
+
+            var result = designations.Select(x => new
+            {
+                id = x.DesignationId,
+                name = x.DesignationName
+            });
+
+            return Json(result);
         }
 
         // UPDATE - GET
@@ -185,9 +243,10 @@ namespace EMS.Web.Controllers
         {
             await _employeeService.DeleteAsync(id);
 
-            TempData["SuccessMessage"] = "Employee Deleted successfully.";
+            TempData["SuccessMessage"] = "Employee deleted successfully.";
 
             return RedirectToAction(nameof(Index));
         }
+      
     }
 }

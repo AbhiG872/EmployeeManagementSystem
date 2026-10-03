@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EMS.Entities.Entities
 {
@@ -36,15 +32,18 @@ namespace EMS.Entities.Entities
         [Required(ErrorMessage = "Date of Joining is required.")]
         public DateTime DateOfJoining { get; set; }
 
+        // Department
         [Required(ErrorMessage = "Department is required.")]
-        [StringLength(50)]
-        public string Department { get; set; } = string.Empty;
+        public int DepartmentId { get; set; }
 
+        public Department Department { get; set; } = null!;
+
+        // Designation
         [Required(ErrorMessage = "Designation is required.")]
-        [StringLength(50)]
-        public string Designation { get; set; } = string.Empty;
+        public int DesignationId { get; set; }
 
-        [Range(0, 10000000, ErrorMessage = "Salary must be between 0 and 1,00,0000.")]
+        public Designation Designation { get; set; } = null!;
+
         public decimal Salary { get; set; }
 
         [Required]
@@ -54,10 +53,6 @@ namespace EMS.Entities.Entities
         public DateTime CreatedDate { get; set; }
 
         public DateTime? UpdatedDate { get; set; }
-
-
-        //[Required(ErrorMessage = "Date of Birth is required.")]
-        //public DateTime DateOfBirth { get; set; }
 
         public string? ImagePath { get; set; }
     }

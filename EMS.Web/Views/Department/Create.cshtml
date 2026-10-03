@@ -1,0 +1,72 @@
+﻿@model EMS.Entities.Entities.Department
+
+@{
+    ViewData["Title"] = "Create Department";
+}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="mb-4">
+        <h2 class="mb-1">Create Department</h2>
+        <p class="text-muted mb-0">
+            Add a new department to the organization.
+        </p>
+    </div>
+
+
+    <!-- Create Department Card -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">Department Information</h5>
+        </div>
+
+
+        <div class="card-body">
+            <form asp-action="Create" asp-controller="Department" method="post">
+                @Html.AntiForgeryToken()
+
+                <!-- Validation Summary -->
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"> </div>
+
+
+                <!-- Department Name -->
+                <div class="mb-3">
+                    <label asp-for="DepartmentName" class="form-label">Department Name </label>
+                    <input asp-for="DepartmentName" class="form-control" placeholder="Enter department name" />
+                    <span asp-validation-for="DepartmentName" class="text-danger"></span>
+                </div>
+
+
+                <!-- Buttons -->
+                <div class="d-flex gap-2">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        <i class="bi bi-check-lg"></i>
+                        Save Department
+
+                    </button>
+
+
+                    <a asp-action="Index" class="btn btn-outline-secondary"> <i class="bi bi-arrow-left"></i> Back to List</a>
+                 
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

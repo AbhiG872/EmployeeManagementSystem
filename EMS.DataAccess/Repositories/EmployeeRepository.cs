@@ -21,53 +21,38 @@ namespace EMS.DataAccess.Repositories
             _context = context;
         }
 
-        public async Task<PaginatedList<Employee>> GetAllAsync(
-      string? search = null,
-      string? department = null,
-      string? status = null,
-      string? sortColumn = null,
-      string? sortOrder = null,
-      int pageNumber = 1,
-      int pageSize = 10)
+      public async Task<PaginatedList<Employee>> GetAllAsync(string? search = null, string? department = null,
+            string? status = null, string? sortColumn = null, string? sortOrder = null,
+            int pageNumber = 1, int pageSize = 10)
+
         {
-            var query = _context.Employees
-                .AsNoTracking()
-                .AsQueryable();
+            var query = _context.Employees.AsNoTracking().Include(e => e.Designation).Include(e => e.Department).AsQueryable();
 
-
-            // =========================
             // Search
-            // =========================
 
             if (!string.IsNullOrWhiteSpace(search))
             {
                 search = search.Trim();
 
                 query = query.Where(e =>
-                    e.EmployeeCode.Contains(search) ||
                     e.FirstName.Contains(search) ||
                     e.LastName.Contains(search) ||
                     e.Email.Contains(search) ||
                     e.Phone.Contains(search) ||
-                    e.Department.Contains(search) ||
-                    e.Designation.Contains(search));
+                    e.Department.DepartmentName.Contains(search) ||
+                    e.Designation.DesignationName.Contains(search));
             }
 
 
-            // =========================
             // Department Filter
-            // =========================
 
             if (!string.IsNullOrWhiteSpace(department))
             {
                 query = query.Where(e =>
-                    e.Department == department);
+                    e.Department.DepartmentName == department);
             }
 
-
-            // =========================
             // Status Filter
-            // =========================
 
             if (!string.IsNullOrWhiteSpace(status))
             {
@@ -75,10 +60,7 @@ namespace EMS.DataAccess.Repositories
                     e.Status == status);
             }
 
-
-            // =========================
             // Sorting
-            // =========================
 
             query = sortColumn?.ToLower() switch
             {
@@ -98,14 +80,15 @@ namespace EMS.DataAccess.Repositories
                         : query.OrderBy(e => e.Email),
 
                 "department" =>
-                    sortOrder == "desc"
-                        ? query.OrderByDescending(e => e.Department)
-                        : query.OrderBy(e => e.Department),
+                sortOrder == "desc"
+
+                    ? query.OrderByDescending(e => e.Department.DepartmentName)
+                    : query.OrderBy(e => e.Department.DepartmentName),
 
                 "designation" =>
                     sortOrder == "desc"
-                        ? query.OrderByDescending(e => e.Designation)
-                        : query.OrderBy(e => e.Designation),
+                        ? query.OrderByDescending(e => e.Designation.DesignationName)
+                        : query.OrderBy(e => e.Designation.DesignationName),
 
                 "salary" =>
                     sortOrder == "desc"
@@ -121,25 +104,19 @@ namespace EMS.DataAccess.Repositories
             };
 
 
-            // =========================
             // Total Records
-            // =========================
 
             var totalRecords = await query.CountAsync();
 
 
-            // =========================
             // Total Pages
-            // =========================
 
             var totalPages =
                 (int)Math.Ceiling(
                     totalRecords / (double)pageSize);
 
 
-            // =========================
             // Pagination
-            // =========================
 
             var employees = await query
                 .Skip((pageNumber - 1) * pageSize)
@@ -147,9 +124,7 @@ namespace EMS.DataAccess.Repositories
                 .ToListAsync();
 
 
-            // =========================
             // Result
-            // =========================
 
             return new PaginatedList<Employee>
             {
@@ -163,7 +138,10 @@ namespace EMS.DataAccess.Repositories
 
         public async Task<Employee?> GetByIdAsync(int id)
         {
-           return await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == id);
+           return await _context.Employees
+                .Include(e => e.Department)
+                .Include(e => e.Designation)
+                .FirstOrDefaultAsync(e => e.EmployeeId == id);
             
         }
 

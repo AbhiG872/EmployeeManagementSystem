@@ -1,0 +1,134 @@
+﻿@model EMS.Entities.Entities.Designation
+
+@{
+    ViewData["Title"] = "Create Designation";
+}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="mb-4">
+        <h2 class="mb-1">Create Designation</h2>
+
+        <p class="text-muted mb-0">
+            Add a new designation and assign it to a department.
+        </p>
+    </div>
+
+
+    <!-- Create Designation Card -->
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-white">
+            <h5 class="mb-0">
+                Designation Information
+            </h5>
+        </div>
+
+
+        <div class="card-body">
+
+            <form asp-action="Create"
+                  asp-controller="Designation"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+
+                <!-- Validation Summary -->
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+
+                <div class="row">
+
+                    <!-- Department -->
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="DepartmentId"
+                               class="form-label">
+
+                            Department
+
+                        </label>
+
+                        <select asp-for="DepartmentId"
+                                asp-items="ViewBag.Departments"
+                                class="form-select">
+
+                            <option value="">
+                                Select Department
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="DepartmentId"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <!-- Designation Name -->
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="DesignationName"
+                               class="form-label">
+
+                            Designation Name
+
+                        </label>
+
+                        <input asp-for="DesignationName"
+                               class="form-control"
+                               placeholder="Enter designation name" />
+
+                        <span asp-validation-for="DesignationName"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                  
+                </div>
+
+
+                <!-- Buttons -->
+                <div class="d-flex gap-2">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        <i class="bi bi-check-lg"></i>
+                        Save Designation
+
+                    </button>
+
+
+                    <a asp-action="Index"
+                       class="btn btn-outline-secondary">
+
+                        <i class="bi bi-arrow-left"></i>
+                        Back to List
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

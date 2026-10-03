@@ -3,6 +3,7 @@ using EMS.Business.Services;
 using EMS.DataAccess.Data;
 using EMS.DataAccess.Interfaces;
 using EMS.DataAccess.Repositories;
+using EMS.Web.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -14,8 +15,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnetion")));
 
-builder.Services.AddScoped<IEmployeeService, EmployeeService>();
-builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddApplicationServices();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
