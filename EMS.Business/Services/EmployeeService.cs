@@ -37,7 +37,11 @@ namespace EMS.Business.Services
                 pageNumber,
                 pageSize);
         }
-
+        public async Task<Employee?> GetByApplicationUserIdAsync(string userId)
+        {
+            return await _employeeRepository
+                .GetByApplicationUserIdAsync(userId);
+        }
         public async Task<Employee?> GetByIdAsync(int id)
         {
             if (id <= 0)

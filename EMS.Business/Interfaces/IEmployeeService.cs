@@ -18,7 +18,7 @@ namespace EMS.Business.Interfaces
              string? sortOrder = null,
              int pageNumber = 1,
              int pageSize = 10);
-
+        Task<Employee?> GetByApplicationUserIdAsync(string userId);
         Task<Employee?> GetByIdAsync(int id);
 
         Task AddAsync(Employee employee);

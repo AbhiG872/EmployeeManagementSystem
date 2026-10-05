@@ -1,9 +1,11 @@
 using EMS.Business.Interfaces;
 using EMS.Entities.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EMS.Web.Controllers
 {
+    [Authorize]
     public class DepartmentController : Controller
     {
         private readonly IDepartmentService _departmentService;
@@ -39,6 +41,7 @@ namespace EMS.Web.Controllers
 
 
         // GET: Department/Create
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet]
         public IActionResult Create()
         {
@@ -47,6 +50,7 @@ namespace EMS.Web.Controllers
 
 
         // POST: Department/Create
+        [Authorize(Roles = "Admin,HR")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Department department)
@@ -66,6 +70,7 @@ namespace EMS.Web.Controllers
 
 
         // GET: Department/Edit/5
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -82,6 +87,7 @@ namespace EMS.Web.Controllers
 
 
         // POST: Department/Edit/5
+        [Authorize(Roles = "Admin,HR")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
@@ -108,6 +114,7 @@ namespace EMS.Web.Controllers
 
 
         // GET: Department/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -124,6 +131,7 @@ namespace EMS.Web.Controllers
 
 
         // POST: Department/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

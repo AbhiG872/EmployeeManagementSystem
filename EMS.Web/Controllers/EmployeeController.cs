@@ -1,25 +1,30 @@
 ﻿using EMS.Business.Interfaces;
 using EMS.Entities.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace EMS.Web.Controllers
 {
+    [Authorize]
     public class EmployeeController : Controller
     {
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmployeeService _employeeService;
         private readonly IDepartmentService _departmentService;
         private readonly IDesignationService _designationService;
 
-        public EmployeeController(IEmployeeService employeeService, IDepartmentService departmentService,
+        public EmployeeController(UserManager<ApplicationUser> userManager, IEmployeeService employeeService, IDepartmentService departmentService,
              IDesignationService designationService)
         {
+            _userManager = userManager;
             _employeeService = employeeService;
             _departmentService = departmentService;
             _designationService = designationService;
         }
-
-        // READ - Employee List
+        [Authorize(Roles = "Admin,HR")]
         public async Task<IActionResult> Index(string? search, string? department, string? status,
 
             string? sortColumn, string? sortOrder, int pageNumber = 1)
@@ -109,6 +114,7 @@ namespace EMS.Web.Controllers
 
         }
         // CREATE - GET
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -118,6 +124,7 @@ namespace EMS.Web.Controllers
         }
 
         // CREATE - POST
+        [Authorize(Roles = "Admin,HR")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Employee employee, IFormFile? imageFile)
@@ -187,7 +194,7 @@ namespace EMS.Web.Controllers
 
             return Json(result);
         }
-
+        [Authorize(Roles = "Admin,HR")]
         // UPDATE - GET
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
@@ -203,6 +210,7 @@ namespace EMS.Web.Controllers
         }
 
         // UPDATE - POST
+        [Authorize(Roles = "Admin,HR")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Employee employee)
@@ -222,6 +230,7 @@ namespace EMS.Web.Controllers
             TempData["SuccessMessage"] = "Employee updated successfully.";
             return RedirectToAction(nameof(Index));
         }
+        [Authorize(Roles = "Admin")]
         // DELETE - GET
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
@@ -235,7 +244,7 @@ namespace EMS.Web.Controllers
 
             return View(employee);
         }
-
+        [Authorize(Roles = "Admin")]
         // DELETE - POST
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -247,6 +256,27 @@ namespace EMS.Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-      
+        [HttpGet]
+        [Authorize(Roles = "Employee")]
+        public async Task<IActionResult> MyProfile()
+        {
+            var userId = _userManager.GetUserId(User);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var employee = await _employeeService
+                .GetByApplicationUserIdAsync(userId);
+
+            if (employee == null)
+            {
+                return NotFound("Employee profile not found.");
+            }
+
+            return View(employee);
+        }
+
     }
 }

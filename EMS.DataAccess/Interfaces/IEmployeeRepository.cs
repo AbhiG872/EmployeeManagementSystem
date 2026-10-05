@@ -19,7 +19,7 @@ namespace EMS.DataAccess.Interfaces
             int pageNumber = 1,
             int pageSize = 10);
 
-
+        Task<Employee?> GetByApplicationUserIdAsync(string userId);
         Task<Employee?> GetByIdAsync(int id);
         Task AddAsync(Employee employee);
 

@@ -1,4 +1,5 @@
 ﻿using EMS.Entities.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace EMS.DataAccess.Data
 {
-    public class ApplicationDbContext:DbContext
+    public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -21,6 +22,8 @@ namespace EMS.DataAccess.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Department)
                 .WithMany(d => d.Employees)
@@ -38,6 +41,13 @@ namespace EMS.DataAccess.Data
                 .WithMany(dep => dep.Designations)
                 .HasForeignKey(d => d.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Employee ↔ ApplicationUser
+            modelBuilder.Entity<Employee>()
+                .HasOne(e => e.ApplicationUser)
+                .WithOne()
+                .HasForeignKey<Employee>(e => e.ApplicationUserId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

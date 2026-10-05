@@ -199,6 +199,12 @@ namespace EMS.DataAccess.Repositories
 
             return $"EMP-{nextNumber:D6}";
         }
-
+        public async Task<Employee?> GetByApplicationUserIdAsync(string userId)
+        {
+            return await _context.Employees
+                .Include(e => e.Department)
+                .Include(e => e.Designation)
+                .FirstOrDefaultAsync(e => e.ApplicationUserId == userId);
+        }
     }
 }
