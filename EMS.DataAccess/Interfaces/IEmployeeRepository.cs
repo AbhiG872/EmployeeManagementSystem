@@ -27,5 +27,7 @@ namespace EMS.DataAccess.Interfaces
 
         Task DeleteAsync(int id);
         Task<string> GenerateEmployeeCodeAsync();
+        Task<List<Employee>> GetReportingManagersAsync(int? excludeEmployeeId = null);
+
     }
 }

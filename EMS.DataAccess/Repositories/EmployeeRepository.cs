@@ -26,7 +26,12 @@ namespace EMS.DataAccess.Repositories
             int pageNumber = 1, int pageSize = 10)
 
         {
-            var query = _context.Employees.AsNoTracking().Include(e => e.Designation).Include(e => e.Department).AsQueryable();
+            var query = _context.Employees
+     .AsNoTracking()
+     .Include(e => e.Designation)
+     .Include(e => e.Department)
+     .Include(e => e.ReportingManager)
+     .AsQueryable();
 
             // Search
 
@@ -135,12 +140,19 @@ namespace EMS.DataAccess.Repositories
                 TotalRecords = totalRecords
             };
         }
-
+        public async Task<Employee?> GetByApplicationUserIdAsync(string userId)
+        {
+            return await _context.Employees
+                .Include(e => e.Department)
+                .Include(e => e.Designation)
+                .FirstOrDefaultAsync(e => e.ApplicationUserId == userId);
+        }
         public async Task<Employee?> GetByIdAsync(int id)
         {
            return await _context.Employees
                 .Include(e => e.Department)
                 .Include(e => e.Designation)
+                    .Include(e => e.ReportingManager)
                 .FirstOrDefaultAsync(e => e.EmployeeId == id);
             
         }
@@ -197,14 +209,24 @@ namespace EMS.DataAccess.Repositories
                 nextNumber = lastEmployee.EmployeeId + 1;
             }
 
-            return $"EMP-{nextNumber:D6}";
+            return $"EMP{nextNumber:D6}";
         }
-        public async Task<Employee?> GetByApplicationUserIdAsync(string userId)
+        public async Task<List<Employee>> GetReportingManagersAsync(
+    int? excludeEmployeeId = null)
         {
-            return await _context.Employees
-                .Include(e => e.Department)
-                .Include(e => e.Designation)
-                .FirstOrDefaultAsync(e => e.ApplicationUserId == userId);
+            var query = _context.Employees
+                .AsNoTracking()
+                .Where(e => e.Status == "Active");
+
+            if (excludeEmployeeId.HasValue)
+            {
+                query = query.Where(e => e.EmployeeId != excludeEmployeeId.Value);
+            }
+
+            return await query
+                .OrderBy(e => e.FirstName)
+                .ThenBy(e => e.LastName)
+                .ToListAsync();
         }
     }
 }

@@ -24,18 +24,21 @@ namespace EMS.DataAccess.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Employee ↔ Department
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Department)
                 .WithMany(d => d.Employees)
                 .HasForeignKey(e => e.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Employee ↔ Designation
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Designation)
                 .WithMany(d => d.Employees)
                 .HasForeignKey(e => e.DesignationId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Designation ↔ Department
             modelBuilder.Entity<Designation>()
                 .HasOne(d => d.Department)
                 .WithMany(dep => dep.Designations)
@@ -48,6 +51,13 @@ namespace EMS.DataAccess.Data
                 .WithOne()
                 .HasForeignKey<Employee>(e => e.ApplicationUserId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            // Employee ↔ Reporting Manager
+            modelBuilder.Entity<Employee>()
+                .HasOne(e => e.ReportingManager)
+                .WithMany(e => e.TeamMembers)
+                .HasForeignKey(e => e.ReportingManagerId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

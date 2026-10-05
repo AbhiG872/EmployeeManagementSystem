@@ -357,7 +357,13 @@ function renderEmployees(employees) {
 
                 </td>
 
+                <!-- Reporting Manager -->
 
+                    <td>
+
+                        ${employee.reportingManager}
+
+                    </td>
                 <!-- Salary -->
 
                 <td class="fw-semibold">

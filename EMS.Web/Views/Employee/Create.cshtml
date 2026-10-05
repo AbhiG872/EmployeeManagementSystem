@@ -1,5 +1,4 @@
-﻿@model EMS.Entities.Entities.Employee
-
+﻿@model EMS.Web.Models.EmployeeViewModel
 @{
     ViewData["Title"] = "Add Employee";
 }
@@ -11,6 +10,7 @@
 
         <div>
             <h2 class="fw-bold mb-1">Add Employee</h2>
+
             <p class="text-muted mb-0">
                 Add a new employee to the system
             </p>
@@ -25,11 +25,15 @@
 
     <!-- Employee Form Card -->
     <div class="card shadow-sm border-0">
+
         <div class="card-header bg-white py-3">
+
             <h5 class="mb-0 fw-semibold">
                 Employee Information
             </h5>
+
         </div>
+
 
         <div class="card-body p-4">
 
@@ -45,37 +49,77 @@
 
 
                 <div class="row">
-                        <!-- First Name -->
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="FirstName" class="form-label fw-semibold"></label>
-                            <input asp-for="FirstName" class="form-control" placeholder="Enter first name" />
-                            <span asp-validation-for="FirstName" class="text-danger"> </span>
-                        </div>
+
+                    <!-- First Name -->
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="FirstName"
+                               class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="FirstName"
+                               class="form-control"
+                               placeholder="Enter first name" />
+
+                        <span asp-validation-for="FirstName"
+                              class="text-danger">
+                        </span>
+
+                    </div>
 
 
                     <!-- Last Name -->
                     <div class="col-md-6 mb-3">
 
-                        <label asp-for="LastName" class="form-label fw-semibold"></label>
-                        <input asp-for="LastName" class="form-control" placeholder="Enter last name" />
-                        <span asp-validation-for="LastName" class="text-danger"></span>
+                        <label asp-for="LastName"
+                               class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="LastName"
+                               class="form-control"
+                               placeholder="Enter last name" />
+
+                        <span asp-validation-for="LastName"
+                              class="text-danger">
+                        </span>
+
                     </div>
 
 
                     <!-- Email -->
                     <div class="col-md-6 mb-3">
 
-                        <label asp-for="Email" class="form-label fw-semibold"></label>
-                        <input asp-for="Email" type="email" class="form-control" placeholder="example@gmail.com" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
+                        <label asp-for="Email"
+                               class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="Email"
+                               type="email"
+                               class="form-control"
+                               placeholder="example@gmail.com" />
+
+                        <span asp-validation-for="Email"
+                              class="text-danger">
+                        </span>
+
                     </div>
 
 
                     <!-- Phone -->
                     <div class="col-md-6 mb-3">
-                        <label asp-for="Phone" class="form-label fw-semibold"> </label>
-                        <input asp-for="Phone" class="form-control" placeholder="Enter phone number" />
-                        <span asp-validation-for="Phone" class="text-danger"> </span>
+
+                        <label asp-for="Phone"
+                               class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="Phone"
+                               class="form-control"
+                               placeholder="Enter phone number" />
+
+                        <span asp-validation-for="Phone"
+                              class="text-danger">
+                        </span>
+
                     </div>
 
 
@@ -95,43 +139,83 @@
                         </span>
 
                     </div>
-                @*     <!-- Date of DateOfBirth -->
-                    <div class="col-md-6 mb-3">
-
-                        <label asp-for="DateOfBirth"
-                               class="form-label fw-semibold">
-                        </label>
-
-                        <input asp-for="DateOfBirth"
-                               type="date"
-                               class="form-control" />
-
-                        <span asp-validation-for="DateOfBirth"
-                              class="text-danger">
-                        </span>
-
-                    </div> *@
 
 
                     <!-- Department -->
                     <div class="col-md-6 mb-3">
 
-                        <label asp-for="DepartmentId" class="form-label">Department</label>
-                        <select asp-for="DepartmentId" asp-items="ViewBag.Departments" class="form-select" id="DepartmentId">
-                            <option value="">Select Department</option>
+                        <label asp-for="DepartmentId"
+                               class="form-label fw-semibold">
+                            Department
+                        </label>
+
+                        <select asp-for="DepartmentId"
+                                asp-items="Model.Departments"
+                                class="form-select"
+                                id="DepartmentId">
+
+                            <option value="">
+                                Select Department
+                            </option>
+
                         </select>
-                        <span asp-validation-for="DepartmentId" class="text-danger"> </span>
+
+                        <span asp-validation-for="DepartmentId"
+                              class="text-danger">
+                        </span>
+
                     </div>
 
 
                     <!-- Designation -->
                     <div class="col-md-6 mb-3">
 
-                        <label asp-for="DesignationId" class="form-label">Designation</label>
-                        <select asp-for="DesignationId"class="form-select" id="DesignationId">
-                            <option value="">Select Designation</option>
+                        <label asp-for="DesignationId"
+                               class="form-label fw-semibold">
+                            Designation
+                        </label>
+
+                        <select asp-for="DesignationId"
+                                asp-items="Model.Designations"
+                                class="form-select"
+                                id="DesignationId">
+
+                            <option value="">
+                                Select Designation
+                            </option>
+
                         </select>
-                        <span asp-validation-for="DesignationId" class="text-danger"> </span>
+
+                        <span asp-validation-for="DesignationId"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- Reporting Manager -->
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="ReportingManagerId"
+                               class="form-label fw-semibold">
+                            Reporting Manager
+                        </label>
+
+                        <select asp-for="ReportingManagerId"
+                                asp-items="Model.ReportingManagers"
+                                class="form-select"
+                                id="ReportingManagerId">
+
+                            <option value="">
+                                Select Reporting Manager
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="ReportingManagerId"
+                              class="text-danger">
+                        </span>
+
                     </div>
 
 
@@ -173,7 +257,9 @@
                         <select asp-for="Status"
                                 class="form-select">
 
-                            <option value="">Select Status</option>
+                            <option value="">
+                                Select Status
+                            </option>
 
                             <option value="Active">
                                 Active
@@ -209,7 +295,6 @@
                         </small>
 
                     </div>
-
 
                 </div>
 
@@ -282,78 +367,6 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-  {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
 
-    <script>
-
-        $(document).ready(function () {
-
-            $("#DepartmentId").change(function () {
-
-                var departmentId = $(this).val();
-
-                var designationDropdown =
-                    $("#DesignationId");
-
-
-                // Clear old designations
-                designationDropdown.empty();
-
-
-                // Add default option
-                designationDropdown.append(
-                    '<option value="">Select Designation</option>'
-                );
-
-
-                // If no department selected
-                if (!departmentId) {
-                    return;
-                }
-
-
-                // Get designations
-                $.ajax({
-
-                    url: '@Url.Action("GetDesignations", "Employee")',
-
-                    type: 'GET',
-
-                    data: {
-                        departmentId: departmentId
-                    },
-
-                    success: function (data) {
-
-                        $.each(data, function (index, item) {
-
-                            designationDropdown.append(
-                                $('<option></option>')
-                                    .val(item.id)
-                                    .text(item.name)
-                            );
-
-                        });
-
-                    },
-
-                    error: function () {
-
-                        alert(
-                            "Unable to load designations."
-                        );
-
-                    }
-
-                });
-
-            });
-
-        });
-
-    </script>
-}
+    <script src="~/js/employee-create.js"></script>
 }

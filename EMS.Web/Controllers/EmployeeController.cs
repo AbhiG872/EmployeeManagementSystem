@@ -1,5 +1,6 @@
 ﻿using EMS.Business.Interfaces;
 using EMS.Entities.Entities;
+using EMS.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -89,7 +90,9 @@ namespace EMS.Web.Controllers
                 department = e.Department?.DepartmentName,
 
                 designation = e.Designation?.DesignationName,
-
+                reportingManager = e.ReportingManager != null
+                ? $"{e.ReportingManager.FirstName} {e.ReportingManager.LastName}"
+                : "Not Assigned",
                 salary = e.Salary,
                 status = e.Status,
                 imagePath = e.ImagePath
@@ -104,73 +107,156 @@ namespace EMS.Web.Controllers
                 totalRecords = employees.TotalRecords
             });
         }
-        private async Task PopulateDepartmentsAsync(int? selectedDepartmentId = null)
+        private async Task PopulateCreateDropdownsAsync(EmployeeViewModel model)
         {
+            // Departments
             var departments = await _departmentService.GetLookupAsync();
 
+            model.Departments = departments
+                .Select(d => new SelectListItem
+                {
+                    Value = d.DepartmentId.ToString(),
+                    Text = d.DepartmentName,
+                    Selected = d.DepartmentId == model.DepartmentId
+                })
+                .ToList();
 
-            ViewBag.Departments = new SelectList(departments, "DepartmentId", "DepartmentName",
-                selectedDepartmentId);
 
+            // Designations
+            if (model.DepartmentId > 0)
+            {
+                var designations =
+                    await _designationService.GetByDepartmentIdAsync(model.DepartmentId);
+
+                model.Designations = designations
+                    .Select(d => new SelectListItem
+                    {
+                        Value = d.DesignationId.ToString(),
+                        Text = d.DesignationName,
+                        Selected = d.DesignationId == model.DesignationId
+                    })
+                    .ToList();
+            }
+
+
+            // Reporting Managers
+            var managers =
+                await _employeeService.GetReportingManagersAsync(model.EmployeeId);
+
+            model.ReportingManagers = managers
+                .Select(e => new SelectListItem
+                {
+                    Value = e.EmployeeId.ToString(),
+                    Text = $"{e.FirstName} {e.LastName}",
+                    Selected = e.EmployeeId == model.ReportingManagerId
+                })
+                .ToList();
         }
         // CREATE - GET
         [Authorize(Roles = "Admin,HR")]
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            await PopulateDepartmentsAsync();
+            var model = new EmployeeViewModel
+            {
+                DateOfJoining = DateTime.Today,
+                Status = "Active"
+            };
 
-            return View(new Employee());
+            await PopulateCreateDropdownsAsync(model);
+
+            return View(model);
         }
 
         // CREATE - POST
+
         [Authorize(Roles = "Admin,HR")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Employee employee, IFormFile? imageFile)
+        public async Task<IActionResult> Create(
+                  EmployeeViewModel model,
+              IFormFile? imageFile)
         {
-            employee.EmployeeCode = await _employeeService.GenerateEmployeeCodeAsync();
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                await PopulateDepartmentsAsync(employee.DepartmentId);
+                await PopulateCreateDropdownsAsync(model);
 
-                return View(employee);
+                return View(model);
             }
 
-            employee.CreatedDate = DateTime.Now;
 
+            // Create Entity
+            var employee = new Employee
+            {
+                EmployeeCode =
+                    await _employeeService.GenerateEmployeeCodeAsync(),
+
+                FirstName = model.FirstName,
+
+                LastName = model.LastName,
+
+                Email = model.Email,
+
+                Phone = model.Phone,
+
+                DateOfJoining = model.DateOfJoining,
+
+                DepartmentId = model.DepartmentId,
+
+                DesignationId = model.DesignationId,
+
+                ReportingManagerId = model.ReportingManagerId,
+
+                Salary = model.Salary,
+
+                Status = model.Status,
+
+                CreatedDate = DateTime.Now
+            };
+
+
+            // Image Upload
             if (imageFile != null && imageFile.Length > 0)
             {
-                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(),
-                    "wwwroot", "uploads", "employees");
+                string uploadsFolder = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "uploads",
+                    "employees"
+                );
+
 
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
                 }
 
+
                 string uniqueFileName =
-                    Guid.NewGuid().ToString() +
-                    Path.GetExtension(imageFile.FileName);
+                    Guid.NewGuid().ToString()
+                    + Path.GetExtension(imageFile.FileName);
 
-                string filePath = Path.Combine(
-                    uploadsFolder,
-                    uniqueFileName);
 
-                using (var fileStream = new FileStream(
-                    filePath,
-                    FileMode.Create))
+                string filePath =
+                    Path.Combine(uploadsFolder, uniqueFileName);
+
+
+                using (var fileStream =
+                       new FileStream(filePath, FileMode.Create))
                 {
                     await imageFile.CopyToAsync(fileStream);
                 }
+
 
                 employee.ImagePath =
                     "/uploads/employees/" + uniqueFileName;
             }
 
+
             await _employeeService.AddAsync(employee);
-            TempData["SuccessMessage"] = "Employee created successfully.";
+
+            TempData["SuccessMessage"] =
+                "Employee created successfully.";
 
             return RedirectToAction(nameof(Index));
         }
@@ -194,40 +280,101 @@ namespace EMS.Web.Controllers
 
             return Json(result);
         }
-        [Authorize(Roles = "Admin,HR")]
+       
         // UPDATE - GET
+        [Authorize(Roles = "Admin,HR")]
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var employee = await _employeeService.GetByIdAsync(id);
 
             if (employee == null)
-            {
                 return NotFound();
-            }
 
-            return View(employee);
+            var model = new EmployeeViewModel
+            {
+                EmployeeId = employee.EmployeeId,
+                EmployeeCode = employee.EmployeeCode,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                Email = employee.Email,
+                Phone = employee.Phone,
+                DateOfJoining = employee.DateOfJoining,
+                DepartmentId = employee.DepartmentId,
+                DesignationId = employee.DesignationId,
+                ReportingManagerId = employee.ReportingManagerId,
+                Salary = employee.Salary,
+                Status = employee.Status,
+                ImagePath = employee.ImagePath
+            };
+
+            await PopulateCreateDropdownsAsync(model);
+
+            return View(model);
         }
 
         // UPDATE - POST
         [Authorize(Roles = "Admin,HR")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Employee employee)
+        public async Task<IActionResult> Edit(int id, EmployeeViewModel model, IFormFile? imageFile)
         {
-            if (id != employee.EmployeeId)
-            {
+
+            if (id != model.EmployeeId)
                 return BadRequest();
-            }
 
             if (!ModelState.IsValid)
             {
-                return View(employee);
+                await PopulateCreateDropdownsAsync(model);
+                return View(model);
             }
 
+            var employee = await _employeeService.GetByIdAsync(id);
+
+            if (employee == null)
+                return NotFound();
+
+            employee.FirstName = model.FirstName;
+            employee.LastName = model.LastName;
+            employee.Email = model.Email;
+            employee.Phone = model.Phone;
+            employee.DateOfJoining = model.DateOfJoining;
+            employee.DepartmentId = model.DepartmentId;
+            employee.DesignationId = model.DesignationId;
+            employee.ReportingManagerId = model.ReportingManagerId;
+            employee.Salary = model.Salary;
+            employee.Status = model.Status;
             employee.UpdatedDate = DateTime.Now;
+
+            // Image update
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot/uploads/employees");
+
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                var fileName = Guid.NewGuid().ToString()
+                               + Path.GetExtension(imageFile.FileName);
+
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+
+                employee.ImagePath = "/uploads/employees/" + fileName;
+            }
+
             await _employeeService.UpdateAsync(employee);
+
             TempData["SuccessMessage"] = "Employee updated successfully.";
+
             return RedirectToAction(nameof(Index));
         }
         [Authorize(Roles = "Admin")]

@@ -4,56 +4,429 @@
     ViewData["Title"] = "Employee Details";
 }
 
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
-    <h2>Employee Details</h2>
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <hr />
+        <div>
+            <h2 class="fw-bold mb-1">Employee Details</h2>
+            <p class="text-muted mb-0">
+                View employee information and profile details
+            </p>
+        </div>
 
-    <dl class="row">
+        <a asp-action="Index"
+           class="btn btn-outline-secondary">
+            ← Back to Employees
+        </a>
 
-        <dt class="col-sm-3">Employee Code</dt>
-        <dd class="col-sm-9">@Model.EmployeeCode</dd>
+    </div>
 
-        <dt class="col-sm-3">Name</dt>
-        <dd class="col-sm-9">
-            @Model.FirstName @Model.LastName
-        </dd>
 
-        <dt class="col-sm-3">Email</dt>
-        <dd class="col-sm-9">@Model.Email</dd>
+    <!-- Employee Profile Card -->
+    <div class="card employee-card border-0 shadow-sm">
 
-        <dt class="col-sm-3">Phone</dt>
-        <dd class="col-sm-9">@Model.Phone</dd>
+        <!-- Profile Header -->
+        <div class="profile-header">
 
-        <dt class="col-sm-3">Joining Date</dt>
-        <dd class="col-sm-9">
-            @Model.DateOfJoining.ToString("dd-MM-yyyy")
-        </dd>
+            <div class="profile-left">
 
-        <dt class="col-sm-3">Department</dt>
-        <dd class="col-sm-9">@Model.Department</dd>
+                @if (!string.IsNullOrEmpty(Model.ImagePath))
+                {
+                    <img src="@Model.ImagePath"
+                         alt="@Model.FirstName"
+                         class="profile-image" />
+                }
+                else
+                {
+                    <div class="profile-avatar">
+                        @Model.FirstName?.Substring(0, 1).ToUpper()
+                    </div>
+                }
 
-        <dt class="col-sm-3">Designation</dt>
-        <dd class="col-sm-9">@Model.Designation</dd>
+                <div class="profile-info">
 
-        <dt class="col-sm-3">Salary</dt>
-        <dd class="col-sm-9">@Model.Salary</dd>
+                    <h3 class="mb-1">
+                        @Model.FirstName @Model.LastName
+                    </h3>
 
-        <dt class="col-sm-3">Status</dt>
-        <dd class="col-sm-9">@Model.Status</dd>
+                    <div class="employee-code">
+                        @Model.EmployeeCode
+                    </div>
 
-    </dl>
+                    <span class="status-badge
+                        @(Model.Status == "Active"
+                                                      ? "status-active"
+                                                      : "status-inactive")">
 
-    <a asp-action="Edit"
-       asp-route-id="@Model.EmployeeId"
-       class="btn btn-warning">
-        Edit
-    </a>
+                        @Model.Status
 
-    <a asp-action="Index"
-       class="btn btn-secondary">
-        Back
-    </a>
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Employee Information -->
+        <div class="card-body p-4">
+
+            <h5 class="section-title">
+                Personal Information
+            </h5>
+
+            <div class="row g-4">
+
+                <!-- Email -->
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Email
+                        </div>
+
+                        <div class="info-value">
+                            @Model.Email
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Phone -->
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Phone
+                        </div>
+
+                        <div class="info-value">
+                            @Model.Phone
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Joining Date -->
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Joining Date
+                        </div>
+
+                        <div class="info-value">
+                            @Model.DateOfJoining.ToString("dd MMM yyyy")
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Department -->
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Department
+                        </div>
+
+                        <div class="info-value">
+                            @Model.Department?.DepartmentName
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Designation -->
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Designation
+                        </div>
+
+                        <div class="info-value">
+                            @Model.Designation?.DesignationName
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Reporting Manager -->
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Reporting Manager
+                        </div>
+
+                        <div class="info-value">
+
+                            @if (Model.ReportingManager != null)
+                            {
+                                @Model.ReportingManager.FirstName
+                                @Model.ReportingManager.LastName
+                            }
+                            else
+                            {
+                                <span class="text-muted">
+                                    Not Assigned
+                                </span>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Salary -->
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Salary
+                        </div>
+
+                        <div class="info-value salary-value">
+                            ₹ @Model.Salary.ToString("N2")
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Employee Status -->
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Status
+                        </div>
+
+                        <div class="info-value">
+
+                            <span class="status-badge
+                                @(Model.Status == "Active"
+                                                                      ? "status-active"
+                                                                      : "status-inactive")">
+
+                                @Model.Status
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Actions -->
+            <div class="action-area">
+
+                <a asp-action="Edit"
+                   asp-route-id="@Model.EmployeeId"
+                   class="btn btn-primary px-4">
+
+                    Edit Employee
+
+                </a>
+
+                <a asp-action="Index"
+                   class="btn btn-outline-secondary px-4">
+
+                    Back
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
+
+
+<style>
+
+    .employee-card {
+        border-radius: 14px;
+        overflow: hidden;
+    }
+
+    /* Profile Header */
+
+    .profile-header {
+        padding: 28px;
+        border-bottom: 1px solid #e9ecef;
+        background: #f8f9fa;
+    }
+
+    .profile-left {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .profile-image,
+    .profile-avatar {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+    }
+
+    .profile-image {
+        object-fit: cover;
+        border: 4px solid #ffffff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+    .profile-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0d6efd;
+        color: #ffffff;
+        font-size: 34px;
+        font-weight: 600;
+    }
+
+    .profile-info h3 {
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .employee-code {
+        color: #6c757d;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+
+    /* Status */
+
+    .status-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .status-active {
+        background: #d1e7dd;
+        color: #146c43;
+    }
+
+    .status-inactive {
+        background: #f8d7da;
+        color: #b02a37;
+    }
+
+
+    /* Section */
+
+    .section-title {
+        font-weight: 700;
+        margin-bottom: 24px;
+    }
+
+
+    /* Information */
+
+    .info-item {
+        padding: 16px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid #eef0f2;
+    }
+
+    .info-label {
+        font-size: 12px;
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+
+    .info-value {
+        font-size: 15px;
+        font-weight: 500;
+        color: #212529;
+    }
+
+    .salary-value {
+        font-weight: 700;
+    }
+
+
+    /* Actions */
+
+    .action-area {
+        border-top: 1px solid #e9ecef;
+        margin-top: 30px;
+        padding-top: 20px;
+        display: flex;
+        gap: 10px;
+    }
+
+
+    /* Mobile */
+
+
+
+    {
+        padding: 20px;
+    }
+
+    .profile-left {
+        align-items: flex-start;
+    }
+
+    .profile-image,
+    .profile-avatar {
+        width: 70px;
+        height: 70px;
+    }
+
+    .profile-info h3 {
+        font-size: 20px;
+    }
+
+    .action-area {
+        flex-direction: column;
+    }
+
+        .action-area .btn {
+            width: 100%;
+        }
+
+    }
+</style>

@@ -58,5 +58,12 @@ namespace EMS.Entities.Entities
         public string? ApplicationUserId { get; set; }
 
         public ApplicationUser? ApplicationUser { get; set; }
+
+        public int? ReportingManagerId { get; set; }
+
+        public Employee? ReportingManager { get; set; }
+
+        public ICollection<Employee> TeamMembers { get; set; }
+            = new List<Employee>();
     }
 }

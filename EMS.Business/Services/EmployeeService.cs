@@ -83,6 +83,12 @@ namespace EMS.Business.Services
         {
             return await _employeeRepository.GenerateEmployeeCodeAsync();
         }
+        public async Task<List<Employee>> GetReportingManagersAsync(
+     int? excludeEmployeeId = null)
+        {
+            return await _employeeRepository
+                .GetReportingManagersAsync(excludeEmployeeId);
+        }
     }
 }
 
